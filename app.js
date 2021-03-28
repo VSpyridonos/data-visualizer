@@ -1,9 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const mysql = require('mysql');
+const ejsMate = require('ejs-mate');
+
+const app = express();
+app.engine('ejs', ejsMate);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 
-
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Create MySQL connection
 const db = mysql.createConnection({
@@ -19,7 +27,7 @@ db.connect((err) => {
     console.log("MySQL connected...");
 })
 
-const app = express();
+
 
 // Create db
 app.get('/createdb', (req, res) => {
@@ -32,8 +40,8 @@ app.get('/createdb', (req, res) => {
 })
 
 // Create table
-app.get('/createposttable', (req, res) => {
-    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT)';
+app.get('/', (req, res) => {
+    res.render('index');
 })
 
 
